@@ -22,7 +22,7 @@
       content: "";
       position: absolute;
       inset: 0;
-      background: rgba(85, 77, 71, 0.85); /* your dark hex tone overlay */
+      background: rgba(85, 77, 71, 0.85);
       backdrop-filter: blur(2px);
       z-index: 0;
     }
@@ -74,7 +74,6 @@
 </head>
 
 <body class="relative crt-scanlines flex flex-col items-center justify-center min-h-screen px-4 py-10 z-10">
-
   <h1 class="text-3xl md:text-5xl text-[#f2ece4] mb-8 glow-text glitch text-center">
     >>> Mood Scanner Logbook
   </h1>
@@ -102,29 +101,139 @@
     function m(event) {
       event.preventDefault();
       const input = document.getElementById("mood").value.toLowerCase();
-      let message = "", image = "", link = "";
+      let moodData = {
+        happy: {
+          msg: ">>> Signal received: HAPPY detected.",
+          img: "https://wallpapercave.com/wp/wp4705107.jpg",
+          link: "https://youtu.be/ljnGl5nvUJY?si=wTliPrgV2WSfsPz8",
+          text: "[ Deploy Joy Feed ]"
+        },
+        sad: {
+          msg: ">>> Transmission: SAD state logged.",
+          img: "https://64.media.tumblr.com/0ea7669662f9a23e56528d2c429934cb/tumblr_pl04y5Oy5a1qc4uvwo1_500.png",
+          link: "https://youtu.be/G7Q-nyx8W_U?si=RZcDU-c3ocTExk8a",
+          text: "[ Comfort Link ]"
+        },
+        angry: {
+          msg: ">>> Alert: ANGRY pulse detected.",
+          img: "https://www.shutterstock.com/image-vector/cute-cartoon-kawaii-angry-kitty-260nw-1627944601.jpg",
+          link: "https://youtu.be/9s4IjjbLwk8?si=2wuUgDNa7K6h7bOR",
+          text: "[ Cooldown Protocol ]"
+        },
+        excited: {
+          msg: ">>> Energy surge detected! Something fun's coming.",
+          img: "https://i.imgur.com/sK1zqRU.png",
+          link: "https://youtu.be/d-diB65scQU",
+          text: "[ Pump It 🎉 ]"
+        },
+        anxious: {
+          msg: ">>> Stress spike detected. Let’s breathe together.",
+          img: "https://i.imgur.com/I9f3dvm.png",
+          link: "https://youtu.be/z6X5oEIg6Ak",
+          text: "[ Breathe Easy 🌿 ]"
+        },
+        tired: {
+          msg: ">>> Energy low. Recharge required.",
+          img: "https://i.imgur.com/BTz3oKq.png",
+          link: "https://youtu.be/1ZYbU82GVz4",
+          text: "[ Power Nap 💤 ]"
+        },
+        flirty: {
+          msg: ">>> Romantic signal received. Sparks detected.",
+          img: "https://i.imgur.com/ckWZDNk.png",
+          link: "https://youtu.be/450p7goxZqg",
+          text: "[ Light The Mood 💘 ]"
+        },
+        nervous: {
+          msg: ">>> Unease detected. Reassurance in progress.",
+          img: "https://i.imgur.com/qFWAXkT.png",
+          link: "https://youtu.be/MIr3RsUWrdo",
+          text: "[ You Got This 💪 ]"
+        },
+        confused: {
+          msg: ">>> Glitch in thoughts. Debugging...",
+          img: "https://i.imgur.com/ZR3kqmf.png",
+          link: "https://youtu.be/_z-1fTlSDF0",
+          text: "[ Try This 💡 ]"
+        },
+        grateful: {
+          msg: ">>> Gratitude registered. You're glowing.",
+          img: "https://i.imgur.com/hmKrjID.png",
+          link: "https://youtu.be/sxLNCDaK5G4",
+          text: "[ Appreciation Vibes 🌞 ]"
+        },
+        bored: {
+          msg: ">>> No fun detected. Injecting entertainment.",
+          img: "https://i.imgur.com/W5vW9QH.png",
+          link: "https://youtu.be/Sagg08DrO5U",
+          text: "[ Boredom Buster 🔥 ]"
+        },
+        hopeful: {
+          msg: ">>> Future brightness level: rising.",
+          img: "https://i.imgur.com/7rTUEGT.png",
+          link: "https://youtu.be/BZ4ntN7d4nA",
+          text: "[ Stay Bright ✨ ]"
+        },
+        jealous: {
+          msg: ">>> Comparison overload. Centering self.",
+          img: "https://i.imgur.com/yv2xRhL.png",
+          link: "https://youtu.be/ahhR7NJvnGM",
+          text: "[ Reset Focus 🎯 ]"
+        },
+        lonely: {
+          msg: ">>> Isolation detected. Sending comfort.",
+          img: "https://i.imgur.com/iv2hXvE.png",
+          link: "https://youtu.be/_3-B1K2_X0c",
+          text: "[ You're Not Alone 🤝 ]"
+        },
+        curious: {
+          msg: ">>> Curiosity signal active. Learning initiated.",
+          img: "https://i.imgur.com/Ef7oPsm.png",
+          link: "https://youtu.be/YTuEzzvJfYw",
+          text: "[ Explore More 📚 ]"
+        },
+        embarrassed: {
+          msg: ">>> Oops! Minor glitch detected.",
+          img: "https://i.imgur.com/MCsMKYG.png",
+          link: "https://youtu.be/qWkUBAHdVdM",
+          text: "[ Shake It Off 💃 ]"
+        },
+        surprised: {
+          msg: ">>> Shockwave detected! Surprise acknowledged.",
+          img: "https://i.imgur.com/g2MYGoA.png",
+          link: "https://youtu.be/kXYiU_JCYtU",
+          text: "[ That Just Happened 😳 ]"
+        },
+        shy: {
+          msg: ">>> Low-key detected. No pressure.",
+          img: "https://i.imgur.com/AMkoUnn.png",
+          link: "https://youtu.be/G3k2MOJECvE",
+          text: "[ Stay You 🌸 ]"
+        },
+        guilty: {
+          msg: ">>> Guilt signal detected. Let’s forgive.",
+          img: "https://i.imgur.com/XpY4tRh.png",
+          link: "https://youtu.be/wzGzcyKJg4Q",
+          text: "[ Clean Slate 🧼 ]"
+        },
+        proud: {
+          msg: ">>> Achievement recognized. Well done!",
+          img: "https://i.imgur.com/zjGXYdd.png",
+          link: "https://youtu.be/EXz9Jz0j0uQ",
+          text: "[ Victory Anthem 🏆 ]"
+        }
+      };
 
-      if (input === "happy") {
-        message = ">>> Signal received: HAPPY detected.";
-        image = '<img src="https://wallpapercave.com/wp/wp4705107.jpg" alt="happy image" class="rounded shadow max-w-xs mx-auto">';
-        link = '<a href="https://youtu.be/ljnGl5nvUJY?si=wTliPrgV2WSfsPz8" target="_blank" class="inline-block mt-2 bg-[#6a5050] px-4 py-2 rounded text-[#f2ece4] hover:bg-[#a87c7c]">[ Deploy Joy Feed ]</a>';
-      } else if (input === "sad") {
-        message = ">>> Transmission: SAD state logged.";
-        image = '<img src="https://64.media.tumblr.com/0ea7669662f9a23e56528d2c429934cb/tumblr_pl04y5Oy5a1qc4uvwo1_500.png" alt="sad image" class="rounded shadow max-w-xs mx-auto">';
-        link = '<a href="https://youtu.be/G7Q-nyx8W_U?si=RZcDU-c3ocTExk8a" target="_blank" class="inline-block mt-2 bg-[#6a5050] px-4 py-2 rounded text-[#f2ece4] hover:bg-[#a87c7c]">[ Comfort Link ]</a>';
-      } else if (input === "angry") {
-        message = ">>> Alert: ANGRY pulse detected.";
-        image = '<img src="https://www.shutterstock.com/image-vector/cute-cartoon-kawaii-angry-kitty-260nw-1627944601.jpg" alt="angry image" class="rounded shadow max-w-xs mx-auto">';
-        link = '<a href="https://youtu.be/9s4IjjbLwk8?si=2wuUgDNa7K6h7bOR" target="_blank" class="inline-block mt-2 bg-[#6a5050] px-4 py-2 rounded text-[#f2ece4] hover:bg-[#a87c7c]">[ Cooldown Protocol ]</a>';
+      const mood = moodData[input];
+      if (mood) {
+        document.getElementById("msg").innerHTML = mood.msg;
+        document.getElementById("img").innerHTML = `<img src="${mood.img}" alt="${input}" class="rounded shadow max-w-xs mx-auto">`;
+        document.getElementById("link").innerHTML = `<a href="${mood.link}" target="_blank" class="inline-block mt-2 bg-[#6a5050] px-4 py-2 rounded text-[#f2ece4] hover:bg-[#a87c7c]">${mood.text}</a>`;
       } else {
-        message = ">>> ERROR: Unknown mood. Try happy, sad, or angry.";
-        image = "";
-        link = "";
+        document.getElementById("msg").innerHTML = ">>> ERROR: Unknown mood. Try happy, sad, or angry.";
+        document.getElementById("img").innerHTML = "";
+        document.getElementById("link").innerHTML = "";
       }
-
-      document.getElementById("msg").innerHTML = message;
-      document.getElementById("img").innerHTML = image;
-      document.getElementById("link").innerHTML = link;
     }
   </script>
 </body>
