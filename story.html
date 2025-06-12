@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vintage Adventure Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #2d2424;
+      background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+      font-family: 'Press Start 2P', monospace;
+    }
+
+    #current {
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    button {
+      background-color: #6a5050;
+      border: 2px solid #dcd0c0;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.75rem;
+      color: #f2ece4;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+    }
+
+    button:hover {
+      background-color: #a87c7c;
+      transform: scale(1.05);
+      box-shadow: 0 0 12px rgba(255, 230, 200, 0.3);
+    }
+
+    img {
+      image-rendering: pixelated;
+    }
+  </style>
+</head>
+
+<body class="text-[#f2ece4]">
+
+  <div class="flex flex-col md:flex-row h-screen">
+    <!-- Image Section -->
+    <div class="md:w-1/2 w-full h-64 md:h-full overflow-hidden bg-black">
+      <img id="scene-img" src="DarkRoom.jpg" alt="Scene" class="w-full h-full object-cover" />
+    </div>
+
+    <!-- Text & Choices Section -->
+    <div class="md:w-1/2 w-full flex flex-col justify-center items-center p-6 space-y-8 bg-[#3c3a36]">
+      <p id="current" class="text-sm md:text-base text-center leading-relaxed"></p>
+      <div id="choices" class="flex flex-col items-center space-y-3"></div>
+    </div>
+  </div>
+
+  <script>
+    const story = {
+      "start": {
+        text: "You woke up in a dark room. It smells like someplace you know. You see 2 doors - from one, light is beaming.",
+        img: "DarkRoom.jpg",
+        choices: [
+          { text: "Open the dark door", next: "dark" },
+          { text: "Go to the light door", next: "light" }
+        ]
+      },
+      "dark": {
+        text: "You open the dark door. It slowly makes you insane. You die.",
+        img: "Darkness.jpg",
+        choices: []
+      },
+      "light": {
+        text: "You open the light door. The light is so bright that it blinds your sight. You see a chimney and a door.",
+        img: "Bright.jpg",
+        choices: [
+          { text: "Go to the door", next: "door" },
+          { text: "Go to the chimney", next: "chimney" }
+        ]
+      },
+      "door": {
+        text: "You open the door and see a room with a bed and an exit door.",
+        img: "BedExitDoor.jpg",
+        choices: [
+          { text: "Go to the bed", next: "bed" },
+          { text: "Go to the exit door", next: "exit" }
+        ]
+      },
+      "chimney": {
+        text: "You didn't realize that the chimney was burning. You die.",
+        img: "Fire.jpg",
+        choices: []
+      },
+      "bed": {
+        text: "You go to the bed and fall asleep.",
+        img: "Bed.jpg",
+        choices: []
+      },
+      "exit": {
+        text: "You go to the exit door and see a light.",
+        img: "Light.jpg",
+        choices: [
+          { text: "Go to the light", next: "end" }
+        ]
+      },
+      "end": {
+        text: "Congratulations! You escaped!",
+        img: "your-end-image.jpg", // replace with your own end background
+        choices: []
+      }
+    };
+
+    let currentScene = "start";
+
+    function showScene() {
+      const scene = story[currentScene];
+      document.getElementById("current").innerText = scene.text;
+      document.getElementById("scene-img").src = scene.img;
+
+      const choicesDiv = document.getElementById("choices");
+      choicesDiv.innerHTML = "";
+      scene.choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.innerText = choice.text;
+        btn.onclick = () => {
+          currentScene = choice.next;
+          showScene();
+        };
+        choicesDiv.appendChild(btn);
+      });
+    }
+
+    showScene();
+  </script>
+</body>
+</html>

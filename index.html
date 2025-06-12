@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Journal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
+<!-- Add this to <head> or right above </head> -->
+<style>
+  @keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-1px, 1px); }
+    40% { transform: translate(-1px, -1px); }
+    60% { transform: translate(1px, 1px); }
+    80% { transform: translate(1px, -1px); }
+    100% { transform: translate(0); }
+  }
+
+  .glitchy {
+    animation: glitch 1s infinite;
+    text-shadow:
+      -1px 0 #6a5050,
+      1px 0 #554d47,
+      0 1px #6a5050,
+      0 -1px #554d47;
+  }
+
+  .particle {
+    position: absolute;
+    background-color: #6a5050;
+    border-radius: 50%;
+    opacity: 0.15;
+    animation: float 12s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-100vh); }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+</head>
+<body class="relative text-[#e0ddd7] min-h-screen flex flex-col justify-between overflow-hidden bg-[#1f1b18]">
+  <script>
+    for (let i = 0; i < 30; i++) {
+      const p = document.createElement("div");
+      p.className = "particle";
+      p.style.width = p.style.height = Math.random() * 8 + 2 + "px";
+      p.style.left = Math.random() * 100 + "vw";
+      p.style.animationDelay = Math.random() * 10 + "s";
+      p.style.animationDuration = 6 + Math.random() * 6 + "s";
+      document.body.appendChild(p);
+    }
+  </script>
+
+  <div class="w-full border-b border-[#3e3a34] bg-[#12100e] py-2 text-center tracking-widest uppercase font-bold text-[#e0ddd7] shadow-inner glitch text-xl" data-text="✦ Digital Realm Unlocked ✦">
+    ✦ Digital Realm Unlocked ✦
+  </div>
+
+  <div class="flex flex-col items-center justify-center flex-grow text-center px-6 py-10 relative">
+    <div class="journal-paper border-4 border-[#2a2723] rounded-2xl shadow-[0_0_30px_rgba(0,255,255,0.15)] max-w-2xl w-full p-8 relative overflow-hidden journal-container">
+      <div class="absolute -top-10 -right-10 w-32 h-32 bg-[#8ab1a0] opacity-10 rounded-full filter blur-xl"></div>
+
+      <h1 class="glitch text-5xl mb-6 font-bold text-[#e0ddd7]" data-text="WELCOME TO THE ARCHIVE">
+        WELCOME TO THE ARCHIVE
+      </h1>
+
+      <p class="text-xl leading-relaxed text-[#d8d3c3] mb-6 relative z-10">
+        Welcome to a vault of imagination — curated creations and wild dreams await.
+        Enter and explore a retro-futuristic sanctuary of thought.
+      </p>
+
+      <a href="projects.html" class="inline-block px-6 py-3 bg-[#141210] hover:bg-[#2a2723] text-[#e0ddd7] font-bold rounded-lg transition-all duration-300 hover:scale-105 shadow-lg border border-[#7df9ff] hover:shadow-[0_0_25px_rgba(125,249,255,0.6)] mb-6 relative overflow-hidden group">
+        <span class="relative z-10">➤ ENTER ARCHIVE</span>
+        <span class="absolute inset-0 bg-gradient-to-r from-transparent via-[#7df9ff] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 -rotate-45 scale-x-150"></span>
+      </a>
+
+      <form onsubmit="greet(event)" class="mt-6 flex flex-col gap-3 max-w-md mx-auto">
+        <input
+          type="text"
+          id="un"
+          placeholder="What's your handle, explorer?"
+          class="px-4 py-3 rounded-lg text-gray-900 bg-[#e0ddd7] focus:outline-none focus:ring-4 focus:ring-[#7df9ff] transition-all duration-300 text-xl border border-[#2a2723]"
+        />
+        <button
+          type="submit"
+          class="px-6 py-3 bg-[#141210] hover:bg-[#2a2723] text-[#e0ddd7] font-bold rounded-lg transition-all duration-300 hover:scale-105 shadow-lg border border-[#fff176] hover:shadow-[0_0_20px_rgba(255,241,118,0.6)] relative overflow-hidden group"
+        >
+          <span class="relative z-10">Access</span>
+          <span class="absolute inset-0 bg-gradient-to-r from-transparent via-[#fff176] to-transparent opacity-0 group-hover:opacity-50 transition-opacity duration-500"></span>
+        </button>
+      </form>
+
+      <p id="greet" class="text-xl font-medium text-[#bdb7a5] mt-4"></p>
+    </div>
+  </div>
+
+  <div class="w-full border-t border-[#3e3a34] bg-[#12100e] py-2 text-center text-sm text-[#948e7f]">
+    ⌘ Powered by Starlit Code & Neon Dreams
+  </div>
+
+  <script>
+    function greet(event) {
+      event.preventDefault();
+      const name = document.getElementById("un").value.trim();
+      const greetEl = document.getElementById("greet");
+
+      if (name === "") {
+        greetEl.innerText = "Please enter your name, traveler!";
+      } else {
+        greetEl.innerText = `> Greetings, ${name} — Welcome to the vault.`;
+      }
+
+      greetEl.classList.remove("animate-fade-in-up");
+      void greetEl.offsetWidth;
+      greetEl.classList.add("animate-fade-in-up");
+    }
+  </script>
+</body>
+</html>

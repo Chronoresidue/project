@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mood Checker</title>
+
+  <!-- Fonts & Tailwind -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      font-family: 'Share Tech Mono', monospace;
+      background: url('img.png') no-repeat center center fixed;
+      background-size: cover;
+      color: #f2ece4;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(85, 77, 71, 0.85); /* your dark hex tone overlay */
+      backdrop-filter: blur(2px);
+      z-index: 0;
+    }
+
+    .crt-scanlines::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.05),
+        rgba(0, 0, 0, 0.05) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .glow-text {
+      text-shadow: 0 0 5px #a87c7c, 0 0 10px #6a5050;
+    }
+
+    .glitch {
+      animation: glitch 1.5s infinite;
+    }
+
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-1px, 1px); }
+      40% { transform: translate(1px, -1px); }
+      60% { transform: translate(-1px, -1px); }
+      80% { transform: translate(1px, 1px); }
+      100% { transform: translate(0); }
+    }
+
+    input, button {
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    input:focus, button:hover {
+      outline: none;
+      box-shadow: 0 0 8px #a87c7c;
+    }
+  </style>
+</head>
+
+<body class="relative crt-scanlines flex flex-col items-center justify-center min-h-screen px-4 py-10 z-10">
+
+  <h1 class="text-3xl md:text-5xl text-[#f2ece4] mb-8 glow-text glitch text-center">
+    >>> Mood Scanner Logbook
+  </h1>
+
+  <form onsubmit="m(event)" class="bg-[#6a5050]/80 p-6 md:p-8 rounded-lg shadow-lg z-10 w-full max-w-md flex flex-col items-center space-y-4 border border-[#f2ece4]">
+    <input
+      type="text"
+      id="mood"
+      placeholder="> enter mood"
+      class="w-full px-4 py-2 bg-[#f2ece4] text-[#3c3a36] text-md rounded border border-[#6a5050] placeholder-[#6a5050]"
+    />
+    <button
+      type="submit"
+      class="bg-[#3c3a36] text-[#f2ece4] px-6 py-2 rounded transition-all hover:bg-[#a87c7c] w-full font-semibold"
+    >
+      LAUNCH
+    </button>
+  </form>
+
+  <p id="msg" class="text-xl md:text-2xl font-bold mt-8 text-center glow-text z-10"></p>
+  <div id="img" class="mt-4 z-10"></div>
+  <div id="link" class="mt-4 text-center z-10"></div>
+
+  <script>
+    function m(event) {
+      event.preventDefault();
+      const input = document.getElementById("mood").value.toLowerCase();
+      let message = "", image = "", link = "";
+
+      if (input === "happy") {
+        message = ">>> Signal received: HAPPY detected.";
+        image = '<img src="https://wallpapercave.com/wp/wp4705107.jpg" alt="happy image" class="rounded shadow max-w-xs mx-auto">';
+        link = '<a href="https://youtu.be/ljnGl5nvUJY?si=wTliPrgV2WSfsPz8" target="_blank" class="inline-block mt-2 bg-[#6a5050] px-4 py-2 rounded text-[#f2ece4] hover:bg-[#a87c7c]">[ Deploy Joy Feed ]</a>';
+      } else if (input === "sad") {
+        message = ">>> Transmission: SAD state logged.";
+        image = '<img src="https://64.media.tumblr.com/0ea7669662f9a23e56528d2c429934cb/tumblr_pl04y5Oy5a1qc4uvwo1_500.png" alt="sad image" class="rounded shadow max-w-xs mx-auto">';
+        link = '<a href="https://youtu.be/G7Q-nyx8W_U?si=RZcDU-c3ocTExk8a" target="_blank" class="inline-block mt-2 bg-[#6a5050] px-4 py-2 rounded text-[#f2ece4] hover:bg-[#a87c7c]">[ Comfort Link ]</a>';
+      } else if (input === "angry") {
+        message = ">>> Alert: ANGRY pulse detected.";
+        image = '<img src="https://www.shutterstock.com/image-vector/cute-cartoon-kawaii-angry-kitty-260nw-1627944601.jpg" alt="angry image" class="rounded shadow max-w-xs mx-auto">';
+        link = '<a href="https://youtu.be/9s4IjjbLwk8?si=2wuUgDNa7K6h7bOR" target="_blank" class="inline-block mt-2 bg-[#6a5050] px-4 py-2 rounded text-[#f2ece4] hover:bg-[#a87c7c]">[ Cooldown Protocol ]</a>';
+      } else {
+        message = ">>> ERROR: Unknown mood. Try happy, sad, or angry.";
+        image = "";
+        link = "";
+      }
+
+      document.getElementById("msg").innerHTML = message;
+      document.getElementById("img").innerHTML = image;
+      document.getElementById("link").innerHTML = link;
+    }
+  </script>
+</body>
+</html>
