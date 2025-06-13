@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Poem Gallery</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=Pixelify+Sans&display=swap');
+
+    body {
+      font-family: 'Pixelify Sans', monospace;
+      margin: 0;
+      padding: 0;
+      background: url('poems.png') no-repeat center center fixed;
+      background-size: cover;
+      color: #f4e9dc;
+    }
+
+    h1 {
+      font-family: 'UnifrakturCook', cursive;
+      text-align: center;
+      font-size: 3em;
+      margin-top: 30px;
+      color: #e8dbcf;
+      text-shadow: 2px 2px #6a5050;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      background-color: rgba(106, 80, 80, 0.85);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 0 15px #554d47;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #f4e9dc;
+      font-family: 'Pixelify Sans', monospace;
+      color: #554d47;
+    }
+
+    button {
+      background-color: #554d47;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-family: 'Pixelify Sans', monospace;
+      cursor: pointer;
+      border-radius: 8px;
+      margin: 5px 2px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #6a5050;
+    }
+
+    #poemGrid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .poem-box {
+      background-color: rgba(244, 233, 220, 0.9);
+      color: #554d47;
+      padding: 15px;
+      width: 220px;
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+
+    .poem-box:hover {
+      transform: scale(1.05);
+    }
+
+    .poem-box img {
+      max-width: 100%;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+
+    #fullPoem {
+      margin-top: 40px;
+      background-color: rgba(84, 77, 71, 0.95);
+      padding: 20px;
+      border-radius: 15px;
+      color: #f4e9dc;
+      display: none;
+    }
+
+    #fullPoem img {
+      max-width: 100%;
+      margin-top: 15px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Poem Gallery</h1>
+  <div class="container">
+    <div class="input-group">
+      <label for="title">Title</label>
+      <input type="text" id="title" placeholder="Enter poem title">
+    </div>
+
+    <div class="input-group">
+      <label for="poem">Poem</label>
+      <textarea id="poem" rows="5" placeholder="Write your poem here..."></textarea>
+    </div>
+
+    <div class="input-group">
+      <label for="image">Image URL or path</label>
+      <input type="text" id="image" placeholder="e.g., https://example.com/image.jpg or ./img.jpg">
+    </div>
+
+    <button onclick="savePoem()">Save Poem</button>
+
+    <div id="poemGrid"></div>
+    <div id="fullPoem"></div>
+  </div>
+
+  <script>
+    function savePoem() {
+      const title = document.getElementById("title").value.trim();
+      const poem = document.getElementById("poem").value.trim();
+      const image = document.getElementById("image").value.trim();
+
+      if (!title || !poem) {
+        alert("Please enter both title and poem.");
+        return;
+      }
+
+      const poems = JSON.parse(localStorage.getItem("poems") || "[]");
+      poems.push({ title, poem, image });
+      localStorage.setItem("poems", JSON.stringify(poems));
+
+      document.getElementById("title").value = "";
+      document.getElementById("poem").value = "";
+      document.getElementById("image").value = "";
+
+      displayPoemBoxes();
+    }
+
+    function displayPoemBoxes() {
+      const poems = JSON.parse(localStorage.getItem("poems") || "[]");
+      const grid = document.getElementById("poemGrid");
+      grid.innerHTML = "";
+
+      poems.forEach((poemObj, index) => {
+        const box = document.createElement("div");
+        box.className = "poem-box";
+        box.innerHTML = `
+          <strong>${poemObj.title}</strong>
+          ${poemObj.image ? `<img src="${poemObj.image}" alt="Poem image">` : ""}
+          <br>
+          <button onclick="showPoem(${index})">View</button>
+          <button onclick="editPoem(${index})">Edit</button>
+          <button onclick="deletePoem(${index})">Delete</button>
+        `;
+        grid.appendChild(box);
+      });
+    }
+
+    function showPoem(index) {
+      const poems = JSON.parse(localStorage.getItem("poems") || "[]");
+      const poemObj = poems[index];
+
+      const fullPoem = document.getElementById("fullPoem");
+      fullPoem.style.display = "block";
+      fullPoem.innerHTML = `
+        <h2>${poemObj.title}</h2>
+        <p>${poemObj.poem.replace(/\n/g, "<br>")}</p>
+        ${poemObj.image ? `<img src="${poemObj.image}" alt="Full poem image">` : ""}
+      `;
+    }
+
+    function editPoem(index) {
+      const poems = JSON.parse(localStorage.getItem("poems") || "[]");
+      const poemObj = poems[index];
+
+      document.getElementById("title").value = poemObj.title;
+      document.getElementById("poem").value = poemObj.poem;
+      document.getElementById("image").value = poemObj.image;
+
+      poems.splice(index, 1);
+      localStorage.setItem("poems", JSON.stringify(poems));
+      displayPoemBoxes();
+    }
+
+    function deletePoem(index) {
+      const password = prompt("Enter password to delete:");
+      if (password === "surya123ditya") {
+        const poems = JSON.parse(localStorage.getItem("poems") || "[]");
+        poems.splice(index, 1);
+        localStorage.setItem("poems", JSON.stringify(poems));
+        displayPoemBoxes();
+        document.getElementById("fullPoem").style.display = "none";
+      } else {
+        alert("Incorrect password. Deletion cancelled.");
+      }
+    }
+
+    window.onload = displayPoemBoxes;
+  </script>
+</body>
+</html>
