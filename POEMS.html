@@ -196,16 +196,21 @@
     }
 
     function editPoem(index) {
-      const poems = JSON.parse(localStorage.getItem("poems") || "[]");
-      const poemObj = poems[index];
+      const password = prompt("Enter password to edit:");
+      if (password === "surya123ditya") {
+        const poems = JSON.parse(localStorage.getItem("poems") || "[]");
+        const poemObj = poems[index];
 
-      document.getElementById("title").value = poemObj.title;
-      document.getElementById("poem").value = poemObj.poem;
-      document.getElementById("image").value = poemObj.image;
+        document.getElementById("title").value = poemObj.title;
+        document.getElementById("poem").value = poemObj.poem;
+        document.getElementById("image").value = poemObj.image;
 
-      poems.splice(index, 1);
-      localStorage.setItem("poems", JSON.stringify(poems));
-      displayPoemBoxes();
+        poems.splice(index, 1);
+        localStorage.setItem("poems", JSON.stringify(poems));
+        displayPoemBoxes();
+      } else {
+        alert("Incorrect password. Edit cancelled.");
+      }
     }
 
     function deletePoem(index) {
