@@ -123,7 +123,6 @@
       width: 200px;
       text-align: center;
     }
-
   </style>
 </head>
 <body>
@@ -158,23 +157,24 @@
     <div id="fullPoem"></div>
   </div>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyASpsHDE4xWVBrklO4euAbIm39KTcu3eMM",
       authDomain: "poem-gallery.firebaseapp.com",
       projectId: "poem-gallery",
-      storageBucket: "poem-gallery.firebasestorage.app",
+      storageBucket: "poem-gallery.appspot.com",
       messagingSenderId: "613979204390",
-      appId: "1:613979204390:web:572edd688796725ec6afe7"
+      appId: "1:613979204390:web:572edd688796725ec6afe7",
+      databaseURL: "https://poem-gallery-default-rtdb.firebaseio.com/"
     };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-  </script>
 
-  <script>
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const poemsRef = ref(db, "poems");
+
     const ADMIN_PASSWORD = "surya123ditya";
 
     function unlockForm() {
@@ -187,7 +187,7 @@
       }
     }
 
-    function savePoem() {
+    async function savePoem() {
       const title = document.getElementById("title").value.trim();
       const poem = document.getElementById("poem").value.trim();
       const image = document.getElementById("image").value.trim();
@@ -197,49 +197,49 @@
         return;
       }
 
-      const newPoemRef = db.ref("poems").push();
-      newPoemRef.set({ title, poem, image }, displayPoemBoxes);
+      const newPoemRef = push(poemsRef);
+      await set(newPoemRef, { title, poem, image });
 
       document.getElementById("title").value = "";
       document.getElementById("poem").value = "";
       document.getElementById("image").value = "";
+
+      alert("Poem saved!");
     }
 
     function displayPoemBoxes() {
-      db.ref("poems").once("value", snapshot => {
-        const poems = snapshot.val() || {};
+      onValue(poemsRef, (snapshot) => {
         const grid = document.getElementById("poemGrid");
         grid.innerHTML = "";
+        const poems = snapshot.val() || {};
 
-        Object.entries(poems).forEach(([id, poemObj]) => {
+        Object.entries(poems).forEach(([key, poemObj]) => {
           const box = document.createElement("div");
           box.className = "poem-box";
           box.innerHTML = `
             <strong>${poemObj.title}</strong>
             ${poemObj.image ? `<img src="${poemObj.image}" alt="Poem image">` : ""}
-            <br><button onclick="showPoem(\"${id}\")">View</button>
+            <br><button onclick='showPoem(${JSON.stringify(poemObj)})'>View</button>
           `;
           grid.appendChild(box);
         });
       });
     }
 
-    function showPoem(id) {
-      db.ref("poems/" + id).once("value", snapshot => {
-        const poemObj = snapshot.val();
-        const fullPoem = document.getElementById("fullPoem");
-        fullPoem.style.display = "block";
-        fullPoem.innerHTML = `
-          <h2>${poemObj.title}</h2>
-          <p>${poemObj.poem.replace(/\n/g, "<br>")}</p>
-          ${poemObj.image ? `<img src="${poemObj.image}" alt="Full poem image">` : ""}
-        `;
-      });
+    function showPoem(poemObj) {
+      const fullPoem = document.getElementById("fullPoem");
+      fullPoem.style.display = "block";
+      fullPoem.innerHTML = `
+        <h2>${poemObj.title}</h2>
+        <p>${poemObj.poem.replace(/\n/g, "<br>")}</p>
+        ${poemObj.image ? `<img src="${poemObj.image}" alt="Full poem image">` : ""}
+      `;
     }
 
+    window.unlockForm = unlockForm;
+    window.savePoem = savePoem;
     window.onload = displayPoemBoxes;
   </script>
 </body>
 </html>
-
 
