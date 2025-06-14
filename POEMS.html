@@ -85,13 +85,7 @@
       width: 220px;
       border-radius: 12px;
       text-align: center;
-      cursor: pointer;
       box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      transition: transform 0.2s;
-    }
-
-    .poem-box:hover {
-      transform: scale(1.05);
     }
 
     .poem-box img {
@@ -114,33 +108,69 @@
       margin-top: 15px;
       border-radius: 10px;
     }
+
+    #formSection {
+      display: none;
+      margin-top: 30px;
+    }
+
+    #loginPrompt {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    #loginPrompt input {
+      width: 200px;
+      text-align: center;
+    }
+
   </style>
 </head>
 <body>
   <h1>Poem Gallery</h1>
+
   <div class="container">
-    <div class="input-group">
-      <label for="title">Title</label>
-      <input type="text" id="title" placeholder="Enter poem title">
+    <div id="loginPrompt">
+      <input type="password" id="loginPassword" placeholder="Enter admin password">
+      <button onclick="unlockForm()">Login</button>
     </div>
 
-    <div class="input-group">
-      <label for="poem">Poem</label>
-      <textarea id="poem" rows="5" placeholder="Write your poem here..."></textarea>
-    </div>
+    <div id="formSection">
+      <div class="input-group">
+        <label for="title">Title</label>
+        <input type="text" id="title" placeholder="Enter poem title">
+      </div>
 
-    <div class="input-group">
-      <label for="image">Image URL or path</label>
-      <input type="text" id="image" placeholder="e.g., https://example.com/image.jpg or ./img.jpg">
-    </div>
+      <div class="input-group">
+        <label for="poem">Poem</label>
+        <textarea id="poem" rows="5" placeholder="Write your poem here..."></textarea>
+      </div>
 
-    <button onclick="savePoem()">Save Poem</button>
+      <div class="input-group">
+        <label for="image">Image URL or path</label>
+        <input type="text" id="image" placeholder="e.g., ./img.jpg">
+      </div>
+
+      <button onclick="savePoem()">Save Poem</button>
+    </div>
 
     <div id="poemGrid"></div>
     <div id="fullPoem"></div>
   </div>
 
   <script>
+    const ADMIN_PASSWORD = "surya123ditya";
+
+    function unlockForm() {
+      const input = document.getElementById("loginPassword").value;
+      if (input === ADMIN_PASSWORD) {
+        document.getElementById("formSection").style.display = "block";
+        document.getElementById("loginPrompt").style.display = "none";
+      } else {
+        alert("Incorrect password.");
+      }
+    }
+
     function savePoem() {
       const title = document.getElementById("title").value.trim();
       const poem = document.getElementById("poem").value.trim();
@@ -173,10 +203,7 @@
         box.innerHTML = `
           <strong>${poemObj.title}</strong>
           ${poemObj.image ? `<img src="${poemObj.image}" alt="Poem image">` : ""}
-          <br>
-          <button onclick="showPoem(${index})">View</button>
-          <button onclick="editPoem(${index})">Edit</button>
-          <button onclick="deletePoem(${index})">Delete</button>
+          <br><button onclick="showPoem(${index})">View</button>
         `;
         grid.appendChild(box);
       });
@@ -195,39 +222,9 @@
       `;
     }
 
-    function editPoem(index) {
-      const password = prompt("Enter password to edit:");
-      if (password === "surya123ditya") {
-        const poems = JSON.parse(localStorage.getItem("poems") || "[]");
-        const poemObj = poems[index];
-
-        document.getElementById("title").value = poemObj.title;
-        document.getElementById("poem").value = poemObj.poem;
-        document.getElementById("image").value = poemObj.image;
-
-        poems.splice(index, 1);
-        localStorage.setItem("poems", JSON.stringify(poems));
-        displayPoemBoxes();
-      } else {
-        alert("Incorrect password. Edit cancelled.");
-      }
-    }
-
-    function deletePoem(index) {
-      const password = prompt("Enter password to delete:");
-      if (password === "surya123ditya") {
-        const poems = JSON.parse(localStorage.getItem("poems") || "[]");
-        poems.splice(index, 1);
-        localStorage.setItem("poems", JSON.stringify(poems));
-        displayPoemBoxes();
-        document.getElementById("fullPoem").style.display = "none";
-      } else {
-        alert("Incorrect password. Deletion cancelled.");
-      }
-    }
-
     window.onload = displayPoemBoxes;
   </script>
 </body>
 </html>
+
 
