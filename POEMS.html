@@ -158,6 +158,22 @@
     <div id="fullPoem"></div>
   </div>
 
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyASpsHDE4xWVBrklO4euAbIm39KTcu3eMM",
+      authDomain: "poem-gallery.firebaseapp.com",
+      projectId: "poem-gallery",
+      storageBucket: "poem-gallery.firebasestorage.app",
+      messagingSenderId: "613979204390",
+      appId: "1:613979204390:web:572edd688796725ec6afe7"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+  </script>
+
   <script>
     const ADMIN_PASSWORD = "surya123ditya";
 
@@ -181,45 +197,44 @@
         return;
       }
 
-      const poems = JSON.parse(localStorage.getItem("poems") || "[]");
-      poems.push({ title, poem, image });
-      localStorage.setItem("poems", JSON.stringify(poems));
+      const newPoemRef = db.ref("poems").push();
+      newPoemRef.set({ title, poem, image }, displayPoemBoxes);
 
       document.getElementById("title").value = "";
       document.getElementById("poem").value = "";
       document.getElementById("image").value = "";
-
-      displayPoemBoxes();
     }
 
     function displayPoemBoxes() {
-      const poems = JSON.parse(localStorage.getItem("poems") || "[]");
-      const grid = document.getElementById("poemGrid");
-      grid.innerHTML = "";
+      db.ref("poems").once("value", snapshot => {
+        const poems = snapshot.val() || {};
+        const grid = document.getElementById("poemGrid");
+        grid.innerHTML = "";
 
-      poems.forEach((poemObj, index) => {
-        const box = document.createElement("div");
-        box.className = "poem-box";
-        box.innerHTML = `
-          <strong>${poemObj.title}</strong>
-          ${poemObj.image ? `<img src="${poemObj.image}" alt="Poem image">` : ""}
-          <br><button onclick="showPoem(${index})">View</button>
-        `;
-        grid.appendChild(box);
+        Object.entries(poems).forEach(([id, poemObj]) => {
+          const box = document.createElement("div");
+          box.className = "poem-box";
+          box.innerHTML = `
+            <strong>${poemObj.title}</strong>
+            ${poemObj.image ? `<img src="${poemObj.image}" alt="Poem image">` : ""}
+            <br><button onclick="showPoem(\"${id}\")">View</button>
+          `;
+          grid.appendChild(box);
+        });
       });
     }
 
-    function showPoem(index) {
-      const poems = JSON.parse(localStorage.getItem("poems") || "[]");
-      const poemObj = poems[index];
-
-      const fullPoem = document.getElementById("fullPoem");
-      fullPoem.style.display = "block";
-      fullPoem.innerHTML = `
-        <h2>${poemObj.title}</h2>
-        <p>${poemObj.poem.replace(/\n/g, "<br>")}</p>
-        ${poemObj.image ? `<img src="${poemObj.image}" alt="Full poem image">` : ""}
-      `;
+    function showPoem(id) {
+      db.ref("poems/" + id).once("value", snapshot => {
+        const poemObj = snapshot.val();
+        const fullPoem = document.getElementById("fullPoem");
+        fullPoem.style.display = "block";
+        fullPoem.innerHTML = `
+          <h2>${poemObj.title}</h2>
+          <p>${poemObj.poem.replace(/\n/g, "<br>")}</p>
+          ${poemObj.image ? `<img src="${poemObj.image}" alt="Full poem image">` : ""}
+        `;
+      });
     }
 
     window.onload = displayPoemBoxes;
